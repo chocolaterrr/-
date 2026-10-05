@@ -3,38 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>教材管理</title>
+<title>教材管理チェッカー</title>
 <style>
-:root { --pri: #3498db; --sec: #9b59b6; --bg: #f5f7fa; --card: #ffffff; --text: #333333; --brd: #dddddd; }
-body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 10px; max-width: 500px; margin: 0 auto; }
-h1 { text-align: center; font-size: 1.2rem; color: #2c3e50; }
-.sync-status { text-align: center; font-size: 0.75rem; color: #7f8c8d; margin-bottom: 10px; font-weight: bold; }
+:root {
+--primary-color: #3498db;
+--secondary-color: #9b59b6;
+--bg-color: #f5f7fa;
+--card-bg: #ffffff;
+--text-color: #333333;
+--border-color: #dddddd;
+}
+body {
+font-family: sans-serif;
+background-color: var(--bg-color);
+color: var(--text-color);
+padding: 10px;
+max-width: 500px;
+margin: 0 auto;
+}
+h1 {
+text-align: center;
+font-size: 1.2rem;
+color: #2c3e50;
+margin: 10px 0 5px 0;
+}
+.sync-status {
+text-align: center;
+font-size: 0.75rem;
+color: #7f8c8d;
+margin-bottom: 10px;
+font-weight: bold;
+}
 .sync-status.success { color: #2ecc71; }
 .sync-status.error { color: #e74c3c; }
 .page-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
-.page-tabs button { flex: 1; padding: 10px; font-weight: bold; border: 2px solid var(--brd); background: #e2e8f0; color: #7f8c8d; }
-.page-tabs .active-tab { background: var(--card); color: #2c3e50; border-color: #cbd5e0; border-bottom: none; border-radius: 8px 8px 0 0; }
-.section { background: var(--card); padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 12px; }
+.page-tabs button {
+flex: 1; padding: 10px; font-weight: bold;
+border: 2px solid var(--border-color);
+background: #e2e8f0; color: #7f8c8d;
+}
+.page-tabs button.active-tab {
+background: var(--card-bg); color: #2c3e50;
+border-color: #cbd5e0; border-bottom: none;
+border-radius: 8px 8px 0 0;
+}
+</style>
+</head>
+.section { background: var(--card-bg); padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 12px; }
 .section-title { font-weight: bold; margin-bottom: 8px; color: #7f8c8d; font-size: 0.8rem; }
 .btn-group { display: flex; flex-wrap: wrap; gap: 6px; }
-button { padding: 8px 12px; border: 1px solid var(--brd); background: white; border-radius: 6px; cursor: pointer; font-size: 0.85rem; white-space: nowrap; }
+button { padding: 8px 12px; border: 1px solid var(--border-color); background: white; border-radius: 6px; cursor: pointer; font-size: 0.85rem; white-space: nowrap; }
 button:hover { background: #f0f0f0; }
-button.active { background: var(--pri); color: white; border-color: var(--pri); font-weight: bold; }
+button.active { background: var(--primary-color); color: white; border-color: var(--primary-color); font-weight: bold; }
 .subject-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
 .subject-item { background: #fafbfc; padding: 12px; border-radius: 6px; border: 1px solid #eee; display: flex; flex-direction: column; gap: 8px; }
 .item-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .subject-name { font-size: 0.9rem; font-weight: bold; color: #2c3e50; }
 .status-toggle { display: flex; gap: 3px; background: #eee; padding: 2px; border-radius: 6px; }
 .status-toggle button { padding: 4px 0; font-size: 0.75rem; border: none; border-radius: 4px; background: transparent; color: #333; width: 38px; text-align: center; }
-.status-toggle .has-item { background: #2ecc71; color: white; font-weight: bold; }
-.status-toggle .own-item { background: #e74c3c; color: white; font-weight: bold; }
-.status-toggle .not-has-item { background: #95a5a6; color: white; font-weight: bold; }
-.memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; border: 1px solid var(--brd); border-radius: 6px; box-sizing: border-box; background: #fff; }
-.memo-input:focus { border-color: var(--pri); outline: none; }
+.status-toggle button.has-item { background: #2ecc71; color: white; font-weight: bold; }
+.status-toggle button.own-item { background: #e74c3c; color: white; font-weight: bold; }
+.status-toggle button.not-has-item { background: #95a5a6; color: white; font-weight: bold; }
+.memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; background: #fff; }
 .input-group { display: flex; gap: 6px; margin-bottom: 8px; }
-.text-input { flex: 1; padding: 8px 10px; font-size: 0.85rem; border: 1px solid var(--brd); border-radius: 6px; box-sizing: border-box; }
-button.primary-btn { background: var(--sec); color: white; border-color: var(--sec); font-weight: bold; }
-.folder-container { background: var(--card); border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
+.text-input { flex: 1; padding: 8px 10px; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; }
+button.primary-btn { background: var(--secondary-color); color: white; border-color: var(--secondary-color); font-weight: bold; }
+.folder-container { background: var(--card-bg); border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
 .folder-header { background: #edf2f7; padding: 10px 12px; display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; gap: 8px; cursor: pointer; user-select: none; }
 .folder-left { display: flex; align-items: center; gap: 8px; flex: 1; font-weight: bold; font-size: 0.95rem; color: #2d3748; overflow: hidden; }
 .folder-arrow { font-size: 0.75rem; color: #a0aec0; }
@@ -46,16 +80,15 @@ button.primary-btn { background: var(--sec); color: white; border-color: var(--s
 .folder-checkbox { width: 16px; height: 16px; cursor: pointer; shrink: 0; }
 .batch-action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 8px 12px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; }
 .batch-btn { background: #fff; color: #e74c3c; border-color: #fab1a0; font-size: 0.8rem; padding: 6px 10px; font-weight: bold; }
-.empty-message { font-size: 0.8rem; color: #a0aec0; text-align: center; padding: 10px 0; }
 .hidden { display: none; }
 </style>
 </head>
 <body>
-<h1>教材管理システム</h1>
-<div id="sync-indicator" class="sync-status">共有データ同期中...</div>
+<h1>学習教材 所持管理システム</h1>
+<div id="sync-indicator" class="sync-status">🔗 共有データ同期中...</div>
 <div class="page-tabs">
-<button id="tab-fixed" class="active-tab" onclick="switchPage('fixed')">📘 共テ問題集</button>
-<button id="tab-custom" onclick="switchPage('custom')">📁 自由追加</button>
+<button id="tab-fixed" class="active-tab" onclick="switchPage('fixed')">📘 共通テスト問題集</button>
+<button id="tab-custom" onclick="switchPage('custom')">📁 自由追加（二次対策など）</button>
 </div>
 <div id="page-fixed-area">
 <div class="section">
@@ -93,45 +126,54 @@ button.primary-btn { background: var(--sec); color: white; border-color: var(--s
 <div id="folders-display-area"></div>
 </div>
 
-<script src="https://gstatic.com"></script>
-<script src="https://gstatic.com"></script>
 <script>
-const firebaseConfig = { databaseURL: "https://firebaseio.com" };
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database().ref("shared_data_final_v1");
-
 let shareData = { fixed: {}, customTree: [] };
-let currentYear = null; let currentBook = null;
 
-function getStorageKey(y, b, s) { return `${y}_${b}_${s}`; }
+function getStorageKey(year, bookId, subject) { return `${year}_${bookId}_${subject}`; }
 
-function startLiveSync() {
-db.on('value', (snapshot) => {
-const data = snapshot.val();
-if (data) {
-shareData = data;
-if (!shareData.fixed) shareData.fixed = {};
-if (!shareData.customTree) shareData.customTree = [];
-}
+function loadShareData() {
+const urlParams = new URLSearchParams(window.location.search);
+const dataParam = urlParams.get('d');
+if (dataParam) {
+try {
+shareData = JSON.parse(decodeURIComponent(atob(dataParam)));
 document.getElementById('sync-indicator').className = "sync-status success";
-document.getElementById('sync-indicator').innerText = "✅ リアルタイム共有モード（自動同期中）";
-if (currentYear && currentBook) renderSubjects();
-if (!document.getElementById('page-custom-area').classList.contains('hidden')) renderCustomApp();
-});
+document.getElementById('sync-indicator').innerText = "✅ 共有データを正常に読み込みました";
+} catch (e) {
+document.getElementById('sync-indicator').className = "sync-status error";
+document.getElementById('sync-indicator').innerText = "❌ 共有データの読み込みに失敗しました";
+loadLocalStorageFallback();
+}
+} else { loadLocalStorageFallback(); }
 }
 
-function saveCloudData() { db.set(shareData); }
+function loadLocalStorageFallback() {
+const saved = localStorage.getItem('kyote_checker_shared_backup');
+if (saved) { try { shareData = JSON.parse(saved); } catch(e) { shareData = { fixed: {}, customTree: [] }; } }
+document.getElementById('sync-indicator').className = "sync-status";
+document.getElementById('sync-indicator').innerText = "📱 個人データモード（現在のURLをコピーして共有できます）";
+}
 
-function switchPage(p) {
-const tF = document.getElementById('tab-fixed'); const tC = document.getElementById('tab-custom');
-const aF = document.getElementById('page-fixed-area'); const aC = document.getElementById('page-custom-area');
-if (p === 'fixed') {
-tF.className = 'active-tab'; tC.className = ''; aF.classList.remove('hidden'); aC.classList.add('hidden');
+function saveAndSync() {
+try {
+const dataString = btoa(encodeURIComponent(JSON.stringify(shareData)));
+localStorage.setItem('kyote_checker_shared_backup', JSON.stringify(shareData));
+const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?d=' + dataString;
+window.history.replaceState({ path: newUrl }, '', newUrl);
+document.getElementById('sync-indicator').className = "sync-status success";
+document.getElementById('sync-indicator').innerText = "📢 保存完了！現在のURLをコピーして送れば共有できます！";
+} catch (e) { console.error(e); }
+}
+
+function switchPage(page) {
+const tabFixed = document.getElementById('tab-fixed'); const tabCustom = document.getElementById('tab-custom');
+const areaFixed = document.getElementById('page-fixed-area'); const areaCustom = document.getElementById('page-custom-area');
+if (page === 'fixed') {
+tabFixed.className = 'active-tab'; tabCustom.className = ''; areaFixed.classList.remove('hidden'); areaCustom.classList.add('hidden');
 } else {
-tF.className = ''; tC.className = 'active-tab'; aF.classList.add('hidden'); aC.classList.remove('hidden'); renderCustomApp();
+tabFixed.className = ''; tabCustom.className = 'active-tab'; areaFixed.classList.add('hidden'); areaCustom.classList.remove('hidden'); renderCustomApp();
 }
 }
-
 const BOOK_SERIES = [
 { id: "黒本", name: "黒本 (河合塾)", color: "#222222" },
 { id: "青本", name: "青本 (駿台)", color: "#1f4068" },
@@ -140,113 +182,99 @@ const BOOK_SERIES = [
 ];
 const oldCurriculum = ["英語リーディング", "英語リスニング", "数学Ⅰ・A", "数学Ⅱ・B", "国語", "物理基礎", "化学基礎", "生物基礎", "地学基礎", "物理", "化学", "生物", "日本史B", "世界史B", "地理B", "現代社会", "政治・経済", "倫理"];
 const newCurriculum = ["英語リーディング", "英語リスニング", "数学Ⅰ・A", "数学Ⅱ・B・C", "国語", "物理基礎", "化学基礎", "生物基礎", "地学基礎", "物理", "化学", "生物", "歴史総合，日本史探究", "歴史総合，世界史探究", "地理総合，地理探究", "公共，政治・経済", "公共，倫理", "情報Ⅰ"];
+let currentYear = null; let currentBook = null;
+
 function initBookButtons() {
-const c = document.getElementById('book-select'); c.innerHTML = '';
-BOOK_SERIES.forEach(b => {
-const btn = document.createElement('button'); btn.innerText = b.name; btn.onclick = (e) => selectBook(b.id, b.color, e.target); c.appendChild(btn);
+const container = document.getElementById('book-select'); container.innerHTML = '';
+BOOK_SERIES.forEach(book => {
+const btn = document.createElement('button'); btn.innerText = book.name; btn.onclick = (e) => selectBook(book.id, book.color, e.target); container.appendChild(btn);
 });
 }
 
-function selectYear(y) {
-currentYear = y; currentBook = null;
-document.querySelectorAll('#year-select button').forEach(b => b.classList.remove('active')); event.target.classList.add('active');
+function selectYear(year) {
+currentYear = year; currentBook = null;
+document.querySelectorAll('#year-select button').forEach(btn => btn.classList.remove('active')); event.target.classList.add('active');
 document.getElementById('book-section').classList.remove('hidden'); document.getElementById('subject-section').classList.add('hidden');
-initBookButtons();
+document.querySelectorAll('#book-select button').forEach(btn => { btn.classList.remove('active'); btn.style.backgroundColor = 'white'; btn.style.color = '#333'; });
 }
 
-function selectBook(bId, col, tgt) {
-currentBook = bId;
-document.querySelectorAll('#book-select button').forEach(b => { b.classList.remove('active'); b.style.backgroundColor = 'white'; b.style.color = '#333'; });
-tgt.classList.add('active'); tgt.style.backgroundColor = col; tgt.style.color = 'white';
-document.getElementById('subject-list-title').innerText = `③ チェック (${currentYear}版 【${bId}】)`;
+function selectBook(bookId, color, targetElement) {
+currentBook = bookId;
+document.querySelectorAll('#book-select button').forEach(btn => { btn.classList.remove('active'); btn.style.backgroundColor = 'white'; btn.style.color = '#333'; });
+targetElement.classList.add('active'); targetElement.style.backgroundColor = color; targetElement.style.color = 'white';
+document.getElementById('subject-list-title').innerText = `③ 所持チェック (${currentYear}年度版 【${bookId}】)`;
 document.getElementById('subject-section').classList.remove('hidden'); renderSubjects();
 }
 
 function renderSubjects() {
-const c = document.getElementById('subject-container'); c.innerHTML = ''; const subs = (currentYear >= 2025) ? newCurriculum : oldCurriculum;
+const container = document.getElementById('subject-container'); container.innerHTML = ''; const subjects = (currentYear >= 2025) ? newCurriculum : oldCurriculum;
 if (!shareData.fixed) shareData.fixed = {};
-subs.forEach(sub => {
-const item = document.createElement('div'); item.className = 'subject-item';
-const top = document.createElement('div'); top.className = 'item-top';
-const nm = document.createElement('div'); nm.className = 'subject-name'; nm.innerText = sub;
-const key = getStorageKey(currentYear, currentBook, sub); const sts = shareData.fixed[key + '_status'] || []; const memo = shareData.fixed[key + '_memo'] || '';
-const tog = document.createElement('div'); tog.className = 'status-toggle';
-const bY = document.createElement('button'); bY.innerText = '〇'; if(sts.includes('yes')) bY.className = 'has-item'; bY.onclick = () => toggleFixedMultiStatus(key, 'yes');
-const bO = document.createElement('button'); bO.innerText = '🔺'; if(sts.includes('own')) bO.className = 'own-item'; bO.onclick = () => toggleFixedMultiStatus(key, 'own');
-const bN = document.createElement('button'); bN.innerText = '✖'; if(sts.includes('no')) bN.className = 'not-has-item'; bN.onclick = () => toggleFixedMultiStatus(key, 'no');
-tog.appendChild(bY); tog.appendChild(bO); tog.appendChild(bN); top.appendChild(nm); top.appendChild(tog);
-const inp = document.createElement('input'); inp.type = 'text'; inp.className = 'memo-input'; inp.placeholder = 'メモ'; inp.value = memo;
-inp.oninput = (e) => { shareData.fixed[key + '_memo'] = e.target.value; saveCloudData(); };
-item.appendChild(top); item.appendChild(inp); c.appendChild(item);
+subjects.forEach(sub => {
+const item = document.createElement('div'); item.className = 'subject-item'; const itemTop = document.createElement('div'); itemTop.className = 'item-top'; const name = document.createElement('div'); name.className = 'subject-name'; name.innerText = sub;
+const key = getStorageKey(currentYear, currentBook, sub); const statuses = shareData.fixed[key + '_status'] || []; const memoValue = shareData.fixed[key + '_memo'] || '';
+const toggle = document.createElement('div'); toggle.className = 'status-toggle';
+const bY = document.createElement('button'); bY.innerText = '〇'; if(statuses.includes('yes')) bY.className = 'has-item'; bY.onclick = () => toggleFixedMultiStatus(key, 'yes');
+const bO = document.createElement('button'); bO.innerText = '🔺'; if(statuses.includes('own')) bO.className = 'own-item'; bO.onclick = () => toggleFixedMultiStatus(key, 'own');
+const bN = document.createElement('button'); bN.innerText = '✖'; if(statuses.includes('no')) bN.className = 'not-has-item'; bN.onclick = () => toggleFixedMultiStatus(key, 'no');
+toggle.appendChild(bY); toggle.appendChild(bO); toggle.appendChild(bN); itemTop.appendChild(name); itemTop.appendChild(toggle);
+const memoInput = document.createElement('input'); memoInput.type = 'text'; memoInput.className = 'memo-input'; memoInput.placeholder = 'メモを入力'; memoInput.value = memoValue;
+memoInput.onchange = (e) => { shareData.fixed[key + '_memo'] = e.target.value; saveAndSync(); };
+item.appendChild(itemTop); item.appendChild(memoInput); container.appendChild(item);
 });
 }
 
-function toggleFixedMultiStatus(key, s) {
+function toggleFixedMultiStatus(key, clickedStatus) {
 if (!shareData.fixed[key + '_status']) shareData.fixed[key + '_status'] = [];
-let list = shareData.fixed[key + '_status']; shareData.fixed[key + '_status'] = list.includes(s) ? list.filter(item => item !== s) : [...list, s];
-renderSubjects(); saveCloudData();
+let list = shareData.fixed[key + '_status'];
+if (list.includes(clickedStatus)) { shareData.fixed[key + '_status'] = list.filter(s => s !== clickedStatus); } else { shareData.fixed[key + '_status'].push(clickedStatus); }
+renderSubjects(); saveAndSync();
 }
 
 function findNodeById(nodes, id) {
 for (let n of nodes) { if (n.id === id) return n; if (n.children) { let f = findNodeById(n.children, id); if (f) return f; } } return null;
 }
-
 function createFolder() {
-const inp = document.getElementById('new-folder-name'); const nm = inp.value.trim(); if (!nm) return;
+const input = document.getElementById('new-folder-name'); const name = input.value.trim(); if (!name) return;
 if (!shareData.customTree) shareData.customTree = [];
-shareData.customTree.push({ id: 'n_' + Date.now(), name: nm, type: 'folder', collapsed: false, selected: false, children: [] });
-saveCloudData(); renderCustomApp(); inp.value = '';
+shareData.customTree.push({ id: 'n_' + Date.now(), name: name, type: 'folder', collapsed: false, selected: false, children: [] });
+saveAndSync(); renderCustomApp(); input.value = '';
 }
-
-function addChildNode(pId, type) {
-const inp = document.getElementById(`input_${pId}`); const nm = inp.value.trim(); if (!nm) return;
-const parent = findNodeById(shareData.customTree, pId); if (!parent) return;
-const nNode = { id: 'n_' + Date.now() + Math.random().toString(36).substr(2,3), name: nm, type: type, selected: false };
+function addChildNode(parentId, type) {
+const input = document.getElementById(`input_${parentId}`); const name = input.value.trim(); if (!name) return;
+const parent = findNodeById(shareData.customTree, parentId); if (!parent) return;
+const nNode = { id: 'n_' + Date.now() + Math.random().toString(36).substr(2,3), name: name, type: type, selected: false };
 if (type === 'folder') { nNode.collapsed = false; nNode.children = []; } else { nNode.status = []; nNode.memo = ''; }
-parent.children.push(nNode); saveCloudData(); renderCustomApp();
+parent.children.push(nNode); saveAndSync(); renderCustomApp();
 }
-
 function deleteSingleNode(id) {
 if (!confirm('削除しますか？')) return;
-shareData.customTree = removeNodeFromTree(shareData.customTree, id); saveCloudData(); renderCustomApp();
+shareData.customTree = removeNodeFromTree(shareData.customTree, id); saveAndSync(); renderCustomApp();
 }
-
 function removeNodeFromTree(nodes, id) {
 return nodes.filter(n => { if (n.id === id) return false; if (n.children) n.children = removeNodeFromTree(n.children, id); return true; });
 }
-
-function toggleSelectNode(id, chk) {
-const n = findNodeById(shareData.customTree, id); if (n) n.selected = chk; updateBatchBarVisibility();
-}
-
+function toggleSelectNode(id, chk) { const n = findNodeById(shareData.customTree, id); if (n) n.selected = chk; updateBatchBarVisibility(); }
 function updateBatchBarVisibility() {
 let hasSel = false; const chk = (nodes) => { for (let n of nodes) { if (n.selected) hasSel = true; if (n.children) chk(n.children); } };
 if (shareData.customTree) chk(shareData.customTree);
 document.getElementById('batch-bar').className = hasSel ? 'batch-action-bar' : 'batch-action-bar hidden';
 }
-
 function deleteSelectedFolders() {
 if (!confirm('一括削除しますか？')) return;
 const rm = (nodes) => nodes.filter(n => { if (n.selected) return false; if (n.children) n.children = rm(n.children); return true; });
-shareData.customTree = rm(shareData.customTree); saveCloudData(); renderCustomApp();
+shareData.customTree = rm(shareData.customTree); saveAndSync(); renderCustomApp();
 document.getElementById('batch-bar').className = 'batch-action-bar hidden';
 }
-
 function toggleCollapse(id, ev) {
 if (ev.target.tagName === 'BUTTON' || ev.target.tagName === 'INPUT') return;
 const n = findNodeById(shareData.customTree, id); if (n && n.type === 'folder') { n.collapsed = !n.collapsed; renderCustomApp(); }
 }
-
-function toggleCustomMultiStatus(id, s) {
+function toggleCustomMultiStatus(id, sts) {
 const n = findNodeById(shareData.customTree, id); if (!n) return; if (!n.status) n.status = [];
-if (n.status.includes(s)) { n.status = n.status.filter(item => item !== s); } else { n.status.push(s); }
-saveCloudData(); renderCustomApp();
+n.status = n.status.includes(sts) ? n.status.filter(item => item !== sts) : [...n.status, sts];
+saveAndSync(); renderCustomApp();
 }
-
-function updateCustomMemo(id, val) {
-const n = findNodeById(shareData.customTree, id); if (n) { n.memo = val; saveCloudData(); }
-}
-
+function updateCustomMemo(id, val) { const n = findNodeById(shareData.customTree, id); if (n) { n.memo = val; saveAndSync(); } }
 function moveNodeOrder(id, dir) {
 const sort = (nodes) => {
 const idx = nodes.findIndex(n => n.id === id);
@@ -256,7 +284,7 @@ if (tidx >= 0 && tidx < nodes.length) { const tmp = nodes[idx]; nodes[idx] = nod
 }
 nodes.forEach(n => { if (n.children) n.children = sort(n.children); }); return nodes;
 };
-shareData.customTree = sort(shareData.customTree); saveCloudData(); renderCustomApp();
+shareData.customTree = sort(shareData.customTree); saveAndSync(); renderCustomApp();
 }
 
 function generateHTMLTree(nodes, depth = 0) {
@@ -303,7 +331,7 @@ updateBatchBarVisibility();
 }
 
 initBookButtons();
-startLiveSync();
+loadShareData();
 </script>
 </body>
 </html>

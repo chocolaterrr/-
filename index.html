@@ -2,308 +2,65 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" 
-content="width=device-width,
-initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>教材管理</title>
 <style>
-:root {
---pri: #3498db;
---sec: #9b59b6;
---bg: #f5f7fa;
---card: #ffffff;
---text: #333333;
---brd: #dddddd;
-}
-body {
-font-family: sans-serif;
-background: var(--bg);
-color: var(--text);
-padding: 10px;
-max-width: 500px;
-margin: 0 auto;
-}
-h1 {
-text-align: center;
-font-size: 1.2rem;
-color: #2c3e50;
-}
-.sync-status {
-text-align: center;
-font-size: 0.75rem;
-color: #7f8c8d;
-margin-bottom: 10px;
-font-weight: bold;
-}
-.sync-status.success {
-color: #2ecc71;
-}
-.sync-status.error {
-color: #e74c3c;
-}
-.page-tabs {
-display: flex;
-gap: 8px;
-margin-bottom: 15px;
-}
-.page-tabs button {
-flex: 1;
-padding: 10px;
-font-weight: bold;
-border: 2px solid var(--brd);
-background: #e2e8f0;
-color: #7f8c8d;
-}
-.page-tabs .active-tab {
-background: var(--card);
-color: #2c3e50;
-border-color: #cbd5e0;
-border-bottom: none;
-border-radius: 8px 8px 0 0;
-}
-.section {
-background: var(--card);
-padding: 12px;
-border-radius: 8px;
-box-shadow: 
-0 2px 4px rgba(0,0,0,0.05);
-margin-bottom: 12px;
-}
-.section-title {
-font-weight: bold;
-margin-bottom: 8px;
-color: #7f8c8d;
-font-size: 0.8rem;
-}
-.btn-group {
-display: flex;
-flex-wrap: wrap;
-gap: 6px;
-}
-button {
-padding: 8px 12px;
-border: 1px solid var(--brd);
-background: white;
-border-radius: 6px;
-cursor: pointer;
-font-size: 0.85rem;
-white-space: nowrap;
-}
+:root { --pri: #3498db; --sec: #9b59b6; --bg: #f5f7fa; --card: #ffffff; --text: #333333; --brd: #dddddd; }
+body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 10px; max-width: 500px; margin: 0 auto; }
+h1 { text-align: center; font-size: 1.2rem; color: #2c3e50; }
+.sync-status { text-align: center; font-size: 0.75rem; color: #7f8c8d; margin-bottom: 10px; font-weight: bold; }
+.sync-status.success { color: #2ecc71; }
+.sync-status.error { color: #e74c3c; }
+.page-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
+.page-tabs button { flex: 1; padding: 10px; font-weight: bold; border: 2px solid var(--brd); background: #e2e8f0; color: #7f8c8d; }
+.page-tabs .active-tab { background: var(--card); color: #2c3e50; border-color: #cbd5e0; border-bottom: none; border-radius: 8px 8px 0 0; }
+.section { background: var(--card); padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 12px; }
+.section-title { font-weight: bold; margin-bottom: 8px; color: #7f8c8d; font-size: 0.8rem; }
+.btn-group { display: flex; flex-wrap: wrap; gap: 6px; }
+button { padding: 8px 12px; border: 1px solid var(--brd); background: white; border-radius: 6px; cursor: pointer; font-size: 0.85rem; white-space: nowrap; }
 button:hover { background: #f0f0f0; }
-button.active {
-background: var(--pri);
-color: white;
-border-color: var(--pri);
-font-weight: bold;
-}
-.subject-list {
-display: flex;
-flex-direction: column;
-gap: 12px;
-margin-top: 10px;
-}
-.subject-item {
-background: #fafbfc;
-padding: 12px;
-border-radius: 6px;
-border: 1px solid #eee;
-display: flex;
-flex-direction: column;
-gap: 8px;
-}
-.item-top {
-display: flex;
-justify-content: 
-space-between;
-align-items: center;
-gap: 10px;
-}
-.subject-name {
-font-size: 0.9rem;
-font-weight: bold;
-color: #2c3e50;
-}
-.status-toggle {
-display: flex;
-gap: 3px;
-background: #eee;
-padding: 2px;
-border-radius: 6px;
-}
-.status-toggle button {
-padding: 4px 0;
-font-size: 0.75rem;
-border: none;
-border-radius: 4px;
-background: transparent;
-color: #333;
-width: 38px;
-text-align: center;
-}
-.status-toggle .has-item {
-background: #2ecc71;
-color: white;
-font-weight: bold;
-}
-.status-toggle .own-item {
-background: #e74c3c;
-color: white;
-font-weight: bold;
-}
-.status-toggle .not-has-item {
-background: #95a5a6;
-color: white;
-font-weight: bold;
-}
-.memo-input {
-width: 100%;
-padding: 8px 10px;
-font-size: 0.8rem;
-border: 1px solid var(--brd);
-border-radius: 6px;
-box-sizing: border-box;
-background: #fff;
-}
-.memo-input:focus {
-border-color: var(--pri);
-outline: none;
-}
-.input-group {
-display: flex;
-gap: 6px;
-margin-bottom: 8px;
-}
-.text-input {
-flex: 1;
-padding: 8px 10px;
-font-size: 0.85rem;
-border: 1px solid var(--brd);
-border-radius: 6px;
-box-sizing: border-box;
-}
-button.primary-btn {
-background: var(--sec);
-color: white;
-border-color: var(--sec);
-font-weight: bold;
-}
-.folder-container {
-background: var(--card);
-border: 2px solid #e2e8f0;
-border-radius: 8px;
-margin-bottom: 15px;
-overflow: hidden;
-}
-.folder-header {
-background: #edf2f7;
-padding: 10px 12px;
-display: flex;
-align-items: center;
-border-bottom: 
-1px solid #e2e8f0;
-gap: 8px;
-cursor: pointer;
-user-select: none;
-}
-.folder-left {
-display: flex;
-align-items: center;
-gap: 8px;
-flex: 1;
-font-weight: bold;
-font-size: 0.95rem;
-color: #2d3748;
-overflow: hidden;
-}
-.folder-arrow {
-font-size: 0.75rem;
-color: #a0aec0;
-}
-.sort-btns {
-display: flex;
-gap: 2px;
-shrink: 0;
-}
-.sort-btns button {
-padding: 4px 6px;
-font-size: 0.7rem;
-border-color: #cbd5e0;
-background: #fff;
-color: #4a5568;
-border-radius: 4px;
-}
-.folder-container.collapsed 
-.folder-arrow {
-transform: rotate(-90deg);
-}
-.folder-container.collapsed 
-.folder-content {
-display: none;
-}
-.folder-container.collapsed 
-.folder-header {
-border-bottom: none;
-}
-.folder-checkbox {
-width: 16px;
-height: 16px;
-cursor: pointer;
-shrink: 0;
-}
-.batch-action-bar {
-display: flex;
-justify-content: 
-space-between;
-align-items: center;
-margin-bottom: 12px;
-padding: 8px 12px;
-background: #fff3cd;
-border: 1px solid #ffeeba;
-border-radius: 6px;
-}
-.batch-btn {
-background: #fff;
-color: #e74c3c;
-border-color: #fab1a0;
-font-size: 0.8rem;
-padding: 6px 10px;
-font-weight: bold;
-}
-.empty-message {
-font-size: 0.8rem;
-color: #a0aec0;
-text-align: center;
-padding: 10px 0;
-}
-.hidden {
-display: none;
-}
+button.active { background: var(--pri); color: white; border-color: var(--pri); font-weight: bold; }
+.subject-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+.subject-item { background: #fafbfc; padding: 12px; border-radius: 6px; border: 1px solid #eee; display: flex; flex-direction: column; gap: 8px; }
+.item-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.subject-name { font-size: 0.9rem; font-weight: bold; color: #2c3e50; }
+.status-toggle { display: flex; gap: 3px; background: #eee; padding: 2px; border-radius: 6px; }
+.status-toggle button { padding: 4px 0; font-size: 0.75rem; border: none; border-radius: 4px; background: transparent; color: #333; width: 38px; text-align: center; }
+.status-toggle .has-item { background: #2ecc71; color: white; font-weight: bold; }
+.status-toggle .own-item { background: #e74c3c; color: white; font-weight: bold; }
+.status-toggle .not-has-item { background: #95a5a6; color: white; font-weight: bold; }
+.memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; border: 1px solid var(--brd); border-radius: 6px; box-sizing: border-box; background: #fff; }
+.memo-input:focus { border-color: var(--pri); outline: none; }
+.input-group { display: flex; gap: 6px; margin-bottom: 8px; }
+.text-input { flex: 1; padding: 8px 10px; font-size: 0.85rem; border: 1px solid var(--brd); border-radius: 6px; box-sizing: border-box; }
+button.primary-btn { background: var(--sec); color: white; border-color: var(--sec); font-weight: bold; }
+.folder-container { background: var(--card); border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
+.folder-header { background: #edf2f7; padding: 10px 12px; display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; gap: 8px; cursor: pointer; user-select: none; }
+.folder-left { display: flex; align-items: center; gap: 8px; flex: 1; font-weight: bold; font-size: 0.95rem; color: #2d3748; overflow: hidden; }
+.folder-arrow { font-size: 0.75rem; color: #a0aec0; }
+.sort-btns { display: flex; gap: 2px; shrink: 0; }
+.sort-btns button { padding: 4px 6px; font-size: 0.7rem; border-color: #cbd5e0; background: #fff; color: #4a5568; border-radius: 4px; }
+.folder-container.collapsed .folder-arrow { transform: rotate(-90deg); }
+.folder-container.collapsed .folder-content { display: none; }
+.folder-container.collapsed .folder-header { border-bottom: none; }
+.folder-checkbox { width: 16px; height: 16px; cursor: pointer; shrink: 0; }
+.batch-action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 8px 12px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; }
+.batch-btn { background: #fff; color: #e74c3c; border-color: #fab1a0; font-size: 0.8rem; padding: 6px 10px; font-weight: bold; }
+.empty-message { font-size: 0.8rem; color: #a0aec0; text-align: center; padding: 10px 0; }
+.hidden { display: none; }
 </style>
 </head>
 <body>
 <h1>教材管理システム</h1>
-<div id="sync-indicator" 
-class="sync-status">
-共有データ同期中...
-</div>
+<div id="sync-indicator" class="sync-status">共有データ同期中...</div>
 <div class="page-tabs">
-<button id="tab-fixed" 
-class="active-tab" 
-onclick="switchPage('fixed')">
-📘 共テ問題集
-</button>
-<button id="tab-custom" 
-onclick="switchPage('custom')">
-📁 自由追加
-</button>
+<button id="tab-fixed" class="active-tab" onclick="switchPage('fixed')">📘 共テ問題集</button>
+<button id="tab-custom" onclick="switchPage('custom')">📁 自由追加</button>
 </div>
 <div id="page-fixed-area">
 <div class="section">
-<div class="section-title">
-① 年度を選択
-</div>
-<div class="btn-group" 
-id="year-select">
+<div class="section-title">① 年度を選択</div>
+<div class="btn-group" id="year-select">
 <button onclick="selectYear(2022)">2022</button>
 <button onclick="selectYear(2023)">2023</button>
 <button onclick="selectYear(2024)">2024</button>
@@ -312,68 +69,40 @@ id="year-select">
 <button onclick="selectYear(2027)">2027</button>
 </div>
 </div>
-<div class="section hidden" 
-id="book-section">
-<div class="section-title">
-② シリーズを選択
+<div class="section hidden" id="book-section">
+<div class="section-title">② シリーズを選択</div>
+<div class="btn-group" id="book-select"></div>
 </div>
-<div class="btn-group" 
-id="book-select"></div>
-</div>
-<div class="section hidden" 
-id="subject-section">
-<div class="section-title" 
-id="subject-list-title">
-③ 所持チェック
-</div>
-<div class="subject-list" 
-id="subject-container"></div>
+<div class="section hidden" id="subject-section">
+<div class="section-title" id="subject-list-title">③ 所持チェック</div>
+<div class="subject-list" id="subject-container"></div>
 </div>
 </div>
-<div id="page-custom-area" 
-class="hidden">
+<div id="page-custom-area" class="hidden">
 <div class="section">
-<div class="section-title">
-新しいフォルダを作る
-</div>
+<div class="section-title">新しいフォルダを作る</div>
 <div class="input-group">
-<input type="text" 
-id="new-folder-name" 
-class="text-input" 
-placeholder="例：二次試験対策など">
-<button onclick="createFolder()" 
-class="primary-btn">
-フォルダ作成
-</button>
+<input type="text" id="new-folder-name" class="text-input" placeholder="例：二次試験対策など">
+<button onclick="createFolder()" class="primary-btn">フォルダ作成</button>
 </div>
 </div>
-<div id="batch-bar" 
-class="batch-action-bar hidden">
-<div style="font-size: 0.8rem; 
-color: #856404; 
-font-weight: bold;">
-チェックしたフォルダ：
-</div>
-<button class="batch-btn" 
-onclick="deleteSelectedFolders()">
-選択したフォルダを一括削除
-</button>
+<div id="batch-bar" class="batch-action-bar hidden">
+<div style="font-size: 0.8rem; color: #856404; font-weight: bold;">チェックしたフォルダ：</div>
+<button class="batch-btn" onclick="deleteSelectedFolders()">選択したフォルダを一括削除</button>
 </div>
 <div id="folders-display-area"></div>
 </div>
-<!-- Firebaseのライブラリ（アプリの部品）を読み込みます -->
-<script src="https://gstatic.com"></script>
-<script src="https://gstatic.com"></script>
 
+<script src="https://gstatic.com"></script>
+<script src="https://gstatic.com"></script>
 <script>
-// 👥 全員で同じ場所を編集・共有するための共通設定（アカウント不要）
 const firebaseConfig = {
-databaseURL: "https://firebaseio.com"
+databaseURL: 
+"https://firebaseio.com"
 };
-
-// データベースの初期起動
 firebase.initializeApp(firebaseConfig);
-const db = firebase.database().ref("shared_data_v2026");
+const db = firebase.database()
+.ref("shared_data_v2026_fixed");
 
 let shareData = {
 fixed: {},
@@ -384,249 +113,565 @@ function getStorageKey(y, b, s) {
 return `${y}_${b}_${s}`;
 }
 
-// 🌐 クラウドからデータが変わった瞬間をリアルタイム検知して自動で画面を書き換える
 function startLiveSync() {
 db.on('value', (snapshot) => {
 const data = snapshot.val();
 if (data) {
 shareData = data;
-if (!shareData.fixed) shareData.fixed = {};
-if (!shareData.customTree) shareData.customTree = [];
+if (!shareData.fixed) {
+shareData.fixed = {};
 }
-const ind = document.getElementById('sync-indicator');
+if (!shareData.customTree) {
+shareData.customTree = [];
+}
+}
+const ind = document
+.getElementById('sync-indicator');
 ind.className = "sync-status success";
-ind.innerText = "✅ リアルタイム共有モード（短いURLのまま自動同期中）";
-
-// 表示中の画面を最新データで再描画
-if (currentYear && currentBook) renderSubjects();
-if (!document.getElementById('page-custom-area').classList.contains('hidden')) {
+ind.innerText = 
+"✅ 共有モード（自動同期中）";
+if (currentYear && currentBook) {
+renderSubjects();
+}
+if (!document.getElementById(
+'page-custom-area'
+).classList.contains('hidden')) {
 renderCustomApp();
 }
 }, (error) => {
-console.error(error);
-const ind = document.getElementById('sync-indicator');
+const ind = document
+.getElementById('sync-indicator');
 ind.className = "sync-status error";
-ind.innerText = "❌ 同期エラーが発生しました";
+ind.innerText = 
+"❌ 同期エラーが発生しました";
 });
 }
 
-// クラウドへデータを即時保存する処理
 function saveCloudData() {
 db.set(shareData).catch((e) => {
-console.error("保存失敗", e);
+console.error(e);
 });
 }
 
 function switchPage(p) {
-const tF = document.getElementById('tab-fixed');
-const tC = document.getElementById('tab-custom');
-const aF = document.getElementById('page-fixed-area');
-const aC = document.getElementById('page-custom-area');
+const tF = document
+.getElementById('tab-fixed');
+const tC = document
+.getElementById('tab-custom');
+const aF = document
+.getElementById('page-fixed-area');
+const aC = document
+.getElementById('page-custom-area');
 if (p === 'fixed') {
-tF.className = 'active-tab'; tC.className = '';
-aF.classList.remove('hidden'); aC.classList.add('hidden');
+tF.className = 'active-tab';
+tC.className = '';
+aF.classList.remove('hidden');
+aC.classList.add('hidden');
 } else {
-tF.className = ''; tC.className = 'active-tab';
-aF.classList.add('hidden'); aC.classList.remove('hidden');
+tF.className = '';
+tC.className = 'active-tab';
+aF.classList.add('hidden');
+aC.classList.remove('hidden');
 renderCustomApp();
 }
 }
 
 const BOOK_SERIES = [
-{ id: "黒本", name: "黒本 (河合塾)", color: "#222222" },
-{ id: "青本", name: "青本 (駿台)", color: "#1f4068" },
-{ id: "緑本", name: "緑本 (Z会)", color: "#27aa5e" },
-{ id: "代ゼミ", name: "代ゼミ", color: "#e67e22" }
+{ id: "黒本", name: "黒本 (河合塾)",
+color: "#222222" },
+{ id: "青本", name: "青本 (駿台)",
+color: "#1f4068" },
+{ id: "緑本", name: "緑本 (Z会)",
+color: "#27aa5e" },
+{ id: "代ゼミ", name: "代ゼミ",
+color: "#e67e22" }
 ];
 const oldCurriculum = [
-"英語リーディング", "英語リスニング", "数学Ⅰ・A", "数学Ⅱ・B", "国語", 
-"物理基礎", "化学基礎", "生物基礎", "地学基礎", "物理", "化学", "生物", 
-"日本史B", "世界史B", "地理B", "現代社会", "政治・経済", "倫理"
+"英語リーディング", "英語リスニング",
+"数学Ⅰ・A", "数学Ⅱ・B", "国語",
+"物理基礎", "化学基礎", "生物基礎",
+"地学基礎", "物理", "化学", "生物",
+"日本史B", "世界史B", "地理B",
+"現代社会", "政治・経済", "倫理"
 ];
 const newCurriculum = [
-"英語リーディング", "英語リスニング", "数学Ⅰ・A", "数学Ⅱ・B・C", "国語", 
-"物理基礎", "化学基礎", "生物基礎", "地学基礎", "物理", "化学", "生物", 
-"歴史総合，日本史探究", "歴史総合，世界史探究", "地理総合，地理探究", 
-"公共，政治・経済", "公共，倫理", "情報Ⅰ"
+"英語リーディング", "英語リスニング",
+"数学Ⅰ・A", "数学Ⅱ・B・C", "国語",
+"物理基礎", "化学基礎", "生物基礎",
+"地学基礎", "物理", "化学", "生物",
+"歴史総合，日本史探究",
+"歴史総合，世界史探究",
+"地理総合，地理探究",
+"公共，政治・経済", "公共，倫理",
+"情報Ⅰ"
 ];
-let currentYear = null; let currentBook = null;
+let currentYear = null;
+let currentBook = null;
 
 function initBookButtons() {
-const c = document.getElementById('book-select');
+const c = document
+.getElementById('book-select');
 c.innerHTML = '';
 BOOK_SERIES.forEach(b => {
-const btn = document.createElement('button');
+const btn = document
+.createElement('button');
 btn.innerText = b.name;
-btn.onclick = (e) => selectBook(b.id, b.color, e.target);
+btn.onclick = (e) => 
+selectBook(b.id, b.color, e.target);
 c.appendChild(btn);
 });
 }
 
 function selectYear(y) {
-currentYear = y; currentBook = null;
-const btns = document.querySelectorAll('#year-select button');
-btns.forEach(b => b.classList.remove('active'));
+currentYear = y;
+currentBook = null;
+const btns = document
+.querySelectorAll(
+'#year-select button'
+);
+btns.forEach(b => 
+b.classList.remove('active')
+);
 event.target.classList.add('active');
-document.getElementById('book-section').classList.remove('hidden');
-document.getElementById('subject-section').classList.add('hidden');
-document.querySelectorAll('#book-select button').forEach(b => {
-b.classList.remove('active'); b.style.backgroundColor = 'white'; b.style.color = '#333';
+document.getElementById('book-section')
+.classList.remove('hidden');
+document.getElementById('subject-section')
+.classList.add('hidden');
+document.querySelectorAll(
+'#book-select button'
+).forEach(b => {
+b.classList.remove('active');
+b.style.backgroundColor = 'white';
+b.style.color = '#333';
 });
 }
 function selectBook(bId, col, tgt) {
 currentBook = bId;
-document.querySelectorAll('#book-select button').forEach(b => {
-b.classList.remove('active'); b.style.backgroundColor = 'white'; b.style.color = '#333';
+document.querySelectorAll(
+'#book-select button'
+).forEach(b => {
+b.classList.remove('active');
+b.style.backgroundColor = 'white';
+b.style.color = '#333';
 });
-tgt.classList.add('active'); tgt.style.backgroundColor = col; tgt.style.color = 'white';
-document.getElementById('subject-list-title').innerText = `③ チェック (${currentYear}版 【${bId}】)`;
-document.getElementById('subject-section').classList.remove('hidden');
+tgt.classList.add('active');
+tgt.style.backgroundColor = col;
+tgt.style.color = 'white';
+document.getElementById(
+'subject-list-title'
+).innerText = 
+`③ チェック (${currentYear}版 【${bId}】)`;
+document.getElementById(
+'subject-section'
+).classList.remove('hidden');
 renderSubjects();
 }
 
 function renderSubjects() {
-const c = document.getElementById('subject-container'); c.innerHTML = '';
-const subs = (currentYear >= 2025) ? newCurriculum : oldCurriculum;
-if (!shareData.fixed) shareData.fixed = {};
+const c = document
+.getElementById(
+'subject-container'
+);
+c.innerHTML = '';
+const subs = (currentYear >= 2025) ?
+newCurriculum : oldCurriculum;
+if (!shareData.fixed) {
+shareData.fixed = {};
+}
 
 subs.forEach(sub => {
-const item = document.createElement('div'); item.className = 'subject-item';
-const top = document.createElement('div'); top.className = 'item-top';
-const nm = document.createElement('div'); nm.className = 'subject-name'; nm.innerText = sub;
+const item = document
+.createElement('div');
+item.className = 'subject-item';
+const top = document
+.createElement('div');
+top.className = 'item-top';
+const nm = document
+.createElement('div');
+nm.className = 'subject-name';
+nm.innerText = sub;
 
-const key = getStorageKey(currentYear, currentBook, sub);
-const sts = shareData.fixed[key + '_status'] || [];
-const memo = shareData.fixed[key + '_memo'] || '';
+const key = getStorageKey(
+currentYear, currentBook, sub
+);
+const sts = 
+shareData.fixed[key + '_status'] || [];
+const memo = 
+shareData.fixed[key + '_memo'] || '';
 
-const tog = document.createElement('div'); tog.className = 'status-toggle';
-const bY = document.createElement('button'); bY.innerText = '〇'; if(sts.includes('yes')) bY.className = 'has-item'; bY.onclick = () => toggleFixedMultiStatus(key, 'yes');
-const bO = document.createElement('button'); bO.innerText = '🔺'; if(sts.includes('own')) bO.className = 'own-item'; bO.onclick = () => toggleFixedMultiStatus(key, 'own');
-const bN = document.createElement('button'); bN.innerText = '✖'; if(sts.includes('no')) bN.className = 'not-has-item'; bN.onclick = () => toggleFixedMultiStatus(key, 'no');
+const tog = document
+.createElement('div');
+tog.className = 'status-toggle';
+const bY = document
+.createElement('button');
+bY.innerText = '〇';
+if(sts.includes('yes')) {
+bY.className = 'has-item';
+}
+bY.onclick = () => 
+toggleFixedMultiStatus(key, 'yes');
 
-tog.appendChild(bY); tog.appendChild(bO); tog.appendChild(bN); top.appendChild(nm); top.appendChild(tog);
+const bO = document
+.createElement('button');
+bO.innerText = '🔺';
+if(sts.includes('own')) {
+bO.className = 'own-item';
+}
+bO.onclick = () => 
+toggleFixedMultiStatus(key, 'own');
 
-const inp = document.createElement('input'); inp.type = 'text'; inp.className = 'memo-input'; inp.placeholder = 'メモ'; inp.value = memo;
-inp.oninput = (e) => { shareData.fixed[key + '_memo'] = e.target.value; saveCloudData(); };
+const bN = document
+.createElement('button');
+bN.innerText = '✖';
+if(sts.includes('no')) {
+bN.className = 'not-has-item';
+}
+bN.onclick = () => 
+toggleFixedMultiStatus(key, 'no');
 
-item.appendChild(top); item.appendChild(inp); c.appendChild(item);
+tog.appendChild(bY);
+tog.appendChild(bO);
+tog.appendChild(bN);
+top.appendChild(nm);
+top.appendChild(tog);
+
+const inp = document
+.createElement('input');
+inp.type = 'text';
+inp.className = 'memo-input';
+inp.placeholder = 'メモ';
+inp.value = memo;
+inp.oninput = (e) => {
+shareData.fixed[key + '_memo'] = 
+e.target.value;
+saveCloudData();
+};
+
+item.appendChild(top);
+item.appendChild(inp);
+c.appendChild(item);
 });
 }
 
 function toggleFixedMultiStatus(key, s) {
-if (!shareData.fixed[key + '_status']) shareData.fixed[key + '_status'] = [];
-let list = shareData.fixed[key + '_status'];
-shareData.fixed[key + '_status'] = list.includes(s) ? list.filter(item => item !== s) : [...list, s];
-renderSubjects(); saveCloudData();
+if (!shareData.fixed[key + '_status']) {
+shareData.fixed[key + '_status'] = [];
+}
+let list = 
+shareData.fixed[key + '_status'];
+shareData.fixed[key + '_status'] = 
+list.includes(s) ?
+list.filter(item => item !== s) :
+[...list, s];
+renderSubjects();
+saveCloudData();
 }
 
 function findNodeById(nodes, id) {
-for (let n of nodes) { if (n.id === id) return n; if (n.children) { let f = findNodeById(n.children, id); if (f) return f; } }
+for (let n of nodes) {
+if (n.id === id) return n;
+if (n.children) {
+let f = findNodeById(n.children, id);
+if (f) return f;
+}
+}
 return null;
 }
 
 function createFolder() {
-const inp = document.getElementById('new-folder-name'); const nm = inp.value.trim(); if (!nm) return;
-if (!shareData.customTree) shareData.customTree = [];
-shareData.customTree.push({ id: 'n_' + Date.now(), name: nm, type: 'folder', collapsed: false, selected: false, children: [] });
-saveCloudData(); renderCustomApp(); inp.value = '';
+const inp = document
+.getElementById('new-folder-name');
+const nm = inp.value.trim();
+if (!nm) return;
+if (!shareData.customTree) {
+shareData.customTree = [];
+}
+shareData.customTree.push({
+id: 'n_' + Date.now(),
+name: nm,
+type: 'folder',
+collapsed: false,
+selected: false,
+children: []
+});
+saveCloudData();
+renderCustomApp();
+inp.value = '';
 }
 
 function addChildNode(pId, type) {
-const inp = document.getElementById(`input_${pId}`); const nm = inp.value.trim(); if (!nm) return;
-const parent = findNodeById(shareData.customTree, pId); if (!parent) return;
-const nNode = { id: 'n_' + Date.now() + Math.random().toString(36).substr(2,3), name: nm, type: type, selected: false };
-if (type === 'folder') { nNode.collapsed = false; nNode.children = []; } else { nNode.status = []; nNode.memo = ''; }
-parent.children.push(nNode); saveCloudData(); renderCustomApp();
+const inp = document
+.getElementById(`input_${pId}`);
+const nm = inp.value.trim();
+if (!nm) return;
+const parent = findNodeById(
+shareData.customTree, pId
+);
+if (!parent) return;
+const nNode = {
+id: 'n_' + Date.now() + 
+Math.random().toString(36)
+.substr(2,3),
+name: nm,
+type: type,
+selected: false
+};
+if (type === 'folder') {
+nNode.collapsed = false;
+nNode.children = [];
+} else {
+nNode.status = [];
+nNode.memo = '';
+}
+parent.children.push(nNode);
+saveAndSync();
+saveCloudData();
+renderCustomApp();
 }
 
 function deleteSingleNode(id) {
 if (!confirm('削除しますか？')) return;
-shareData.customTree = removeNodeFromTree(shareData.customTree, id); saveCloudData(); renderCustomApp();
+shareData.customTree = 
+removeNodeFromTree(
+shareData.customTree, id
+);
+saveCloudData();
+renderCustomApp();
 }
 
 function removeNodeFromTree(nodes, id) {
-return nodes.filter(n => { if (n.id === id) return false; if (n.children) n.children = removeNodeFromTree(n.children, id); return true; });
+return nodes.filter(n => {
+if (n.id === id) return false;
+if (n.children) {
+n.children = 
+removeNodeFromTree(n.children, id);
+}
+return true;
+});
 }
 
 function toggleSelectNode(id, chk) {
-const n = findNodeById(shareData.customTree, id); if (n) n.selected = chk;
+const n = findNodeById(
+shareData.customTree, id
+);
+if (n) n.selected = chk;
 updateBatchBarVisibility();
 }
 
 function updateBatchBarVisibility() {
 let hasSel = false;
-const chk = (nodes) => { for (let n of nodes) { if (n.selected) hasSel = true; if (n.children) chk(n.children); } };
-if (shareData.customTree) chk(shareData.customTree);
-document.getElementById('batch-bar').className = hasSel ? 'batch-action-bar' : 'batch-action-bar hidden';
+const chk = (nodes) => {
+for (let n of nodes) {
+if (n.selected) hasSel = true;
+if (n.children) chk(n.children);
+}
+};
+if (shareData.customTree) {
+chk(shareData.customTree);
+}
+document.getElementById(
+'batch-bar'
+).className = hasSel ?
+'batch-action-bar' :
+'batch-action-bar hidden';
 }
 
 function deleteSelectedFolders() {
 if (!confirm('一括削除しますか？')) return;
-const rm = (nodes) => nodes.filter(n => { if (n.selected) return false; if (n.children) n.children = rm(n.children); return true; });
-shareData.customTree = rm(shareData.customTree); saveCloudData(); renderCustomApp();
-document.getElementById('batch-bar').className = 'batch-action-bar hidden';
+const rm = (nodes) => 
+nodes.filter(n => {
+if (n.selected) return false;
+if (n.children) n.children = rm(n.children);
+return true;
+});
+shareData.customTree = 
+rm(shareData.customTree);
+saveCloudData();
+renderCustomApp();
+document.getElementById(
+'batch-bar'
+).className = 
+'batch-action-bar hidden';
 }
 
 function toggleCollapse(id, ev) {
-if (ev.target.tagName === 'BUTTON' || ev.target.tagName === 'INPUT') return;
-const n = findNodeById(shareData.customTree, id); if (n && n.type === 'folder') { n.collapsed = !n.collapsed; renderCustomApp(); }
+if (ev.target.tagName === 'BUTTON' || 
+ev.target.tagName === 'INPUT') return;
+const n = findNodeById(
+shareData.customTree, id
+);
+if (n && n.type === 'folder') {
+n.collapsed = !n.collapsed;
+renderCustomApp();
+}
 }
 
 function toggleCustomMultiStatus(id, s) {
-const n = findNodeById(shareData.customTree, id); if (!n) return; if (!n.status) n.status = [];
-n.status = n.status.includes(s) ? n.status.filter(item => item !== s) : [...n.status, s];
-saveCloudData(); renderCustomApp();
+const n = findNodeById(
+shareData.customTree, id
+);
+if (!n) return;
+if (!n.status) n.status = [];
+if (n.status.includes(s)) {
+n.status = n.status.filter(item => item !== s);
+} else {
+n.status.push(s);
+}
+saveCloudData();
+renderCustomApp();
 }
 
 function updateCustomMemo(id, val) {
-const n = findNodeById(shareData.customTree, id); if (n) { n.memo = val; saveCloudData(); }
+const n = findNodeById(
+shareData.customTree, id
+);
+if (n) {
+n.memo = val;
+saveCloudData();
+}
 }
 
 function moveNodeOrder(id, dir) {
 const sort = (nodes) => {
-const idx = nodes.findIndex(n => n.id === id);
+const idx = nodes.findIndex(
+n => n.id === id
+);
 if (idx !== -1) {
-const tidx = dir === 'up' ? idx - 1 : idx + 1;
-if (tidx >= 0 && tidx < nodes.length) { const tmp = nodes[idx]; nodes[idx] = nodes[tidx]; nodes[tidx] = tmp; }
+const tidx = dir === 'up' ?
+idx - 1 : idx + 1;
+if (tidx >= 0 && 
+tidx < nodes.length) {
+const tmp = nodes[idx];
+nodes[idx] = nodes[tidx];
+nodes[tidx] = tmp;
+}
 return nodes;
 }
-nodes.forEach(n => { if (n.children) n.children = sort(n.children); }); return nodes;
+nodes.forEach(n => {
+if (n.children) {
+n.children = sort(n.children);
+}
+});
+return nodes;
 };
-shareData.customTree = sort(shareData.customTree); saveCloudData(); renderCustomApp();
+shareData.customTree = 
+sort(shareData.customTree);
+saveCloudData();
+renderCustomApp();
 }
 
 function generateHTMLTree(nodes, depth = 0) {
-let html = ''; const pad = depth * 15;
+let html = '';
+const pad = depth * 15;
 nodes.forEach(n => {
 if (n.type === 'folder') {
-html += `<div class="folder-container ${n.collapsed ? 'collapsed' : ''}" style="margin-left:${pad}px;">
-<div class="folder-header" onclick="toggleCollapse('${n.id}', event)">
-<input type="checkbox" class="folder-checkbox" ${n.selected ? 'checked' : ''} onchange="toggleSelectNode('${n.id}', this.checked)">
-<div class="folder-left"><span>▼</span><span>📁 ${n.name}</span></div>
-<div class="sort-btns"><button onclick="moveNodeOrder('${n.id}', 'up')">▲</button><button onclick="moveNodeOrder('${n.id}', 'down')">▼</button></div>
-<button class="delete-btn" onclick="deleteSingleNode('${n.id}')">削除</button>
+html += `
+<div class="folder-container 
+${n.collapsed ? 'collapsed' : ''}" 
+style="margin-left:${pad}px;">
+<div class="folder-header" 
+onclick="toggleCollapse('${n.id}', event)">
+<input type="checkbox" 
+class="folder-checkbox" 
+${n.selected ? 'checked' : ''} 
+onchange="toggleSelectNode(
+'${n.id}', this.checked
+)">
+<div class="folder-left">
+<span>▼</span><span>📁 ${n.name}</span>
 </div>
-<div class="folder-content" style="padding:8px;">
-<div class="input-group"><input type="text" id="input_${n.id}" class="text-input" placeholder="追加"><button onclick="addChildNode('${n.id}', 'text')">+教材</button><button onclick="addChildNode('${n.id}', 'folder')">+フォルダ</button></div>
-<div class="subject-list">${generateHTMLTree(n.children||[], depth + 1)}</div>
+<div class="sort-btns">
+<button onclick="moveNodeOrder(
+'${n.id}', 'up'
+)">▲</button>
+<button onclick="moveNodeOrder(
+'${n.id}', 'down'
+)">▼</button>
+</div>
+<button class="delete-btn" 
+onclick="deleteSingleNode('${n.id}')">
+削除
+</button>
+</div>
+<div class="folder-content" 
+style="padding:8px;">
+<div class="input-group">
+<input type="text" 
+id="input_${n.id}" 
+class="text-input" 
+placeholder="追加">
+<button onclick="addChildNode(
+'${n.id}', 'text'
+)">+教材</button>
+<button onclick="addChildNode(
+'${n.id}', 'folder'
+)">+フォルダ</button>
+</div>
+<div class="subject-list">
+${generateHTMLTree(
+n.children||[], depth + 1
+)}
+</div>
 </div>
 </div>`;
 } else {
 const st = n.status || [];
-html += `<div class="subject-item" style="margin-left:${pad}px; background:#fff; border:1px solid #e2e8f0;">
+html += `
+<div class="subject-item" 
+style="margin-left:${pad}px; 
+background:#fff; 
+border:1px solid #e2e8f0;">
 <div class="item-top">
-<div style="display:flex; align-items:center; gap:6px; flex:1; overflow:hidden;">
-<input type="checkbox" class="folder-checkbox" ${n.selected ? 'checked' : ''} onchange="toggleSelectNode('${n.id}', this.checked)">
-<div class="subject-name">${n.name}</div>
-<div class="sort-btns"><button onclick="moveNodeOrder('${n.id}', 'up')">▲</button><button onclick="moveNodeOrder('${n.id}', 'down')">▼</button></div>
+<div style="display:flex; 
+align-items:center; 
+gap:6px; flex:1; 
+overflow:hidden;">
+<input type="checkbox" 
+class="folder-checkbox" 
+${n.selected ? 'checked' : ''} 
+onchange="toggleSelectNode(
+'${n.id}', this.checked
+)">
+<div class="subject-name">
+${n.name}
+</div>
+<div class="sort-btns">
+<button onclick="moveNodeOrder(
+'${n.id}', 'up'
+)">▲</button>
+<button onclick="moveNodeOrder(
+'${n.id}', 'down'
+)">▼</button>
+</div>
 </div>
 <div class="status-toggle">
-<button ${st.includes('yes')?'class="has-item"':''} onclick="toggleCustomMultiStatus('${n.id}', 'yes')">〇</button>
-<button ${st.includes('own')?'class="own-item"':''} onclick="toggleCustomMultiStatus('${n.id}', 'own')">🔺</button>
-<button ${st.includes('no')?'class="not-has-item"':''} onclick="toggleCustomMultiStatus('${n.id}', 'no')">✖</button>
+<button 
+${st.includes('yes')?
+'class="has-item"':''} 
+onclick="toggleCustomMultiStatus(
+'${n.id}', 'yes'
+)">〇</button>
+<button 
+${st.includes('own')?
+'class="own-item"':''} 
+onclick="toggleCustomMultiStatus(
+'${n.id}', 'own'
+)">🔺</button>
+<button 
+${st.includes('no')?
+'class="not-has-item"':''} 
+onclick="toggleCustomMultiStatus(
+'${n.id}', 'no'
+)">✖</button>
 </div>
 </div>
-<input type="text" class="memo-input" value="${n.memo||''}" placeholder="メモ" oninput="updateCustomMemo('${n.id}', this.value)">
+<input type="text" 
+class="memo-input" 
+value="${n.memo||''}" 
+placeholder="メモ" 
+oninput="updateCustomMemo(
+'${n.id}', this.value
+)">
 </div>`;
 }
 });
@@ -634,7 +679,11 @@ return html;
 }
 
 function renderCustomApp() {
-document.getElementById('folders-display-area').innerHTML = generateHTMLTree(shareData.customTree || [], 0);
+document.getElementById(
+'folders-display-area'
+).innerHTML = generateHTMLTree(
+shareData.customTree || [], 0
+);
 updateBatchBarVisibility();
 }
 
@@ -643,3 +692,4 @@ startLiveSync();
 </script>
 </body>
 </html>
+

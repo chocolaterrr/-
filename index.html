@@ -21,22 +21,18 @@
         button:hover { background: #f0f0f0; }
         button.active { background: var(--primary-color); color: white; border-color: var(--primary-color); font-weight: bold; }
         
-        /* 📱 はみ出さないために1科目ごとに縦に並べる新型スタイル */
         .subject-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
         .subject-item { background: #fafbfc; padding: 12px; border-radius: 6px; border: 1px solid #eee; display: flex; flex-direction: column; gap: 8px; }
         
-        /* 1行目：科目名（左）と 〇🔺✖（右）をすっきり横並び */
         .item-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .subject-name { font-size: 0.9rem; font-weight: bold; color: #2c3e50; }
         
-        /* ボタンのサイズをスマホ幅に完全最適化 */
         .status-toggle { display: flex; gap: 3px; background: #eee; padding: 2px; border-radius: 6px; }
         .status-toggle button { padding: 4px 0; font-size: 0.75rem; border: none; border-radius: 4px; background: transparent; color: #333; width: 38px; text-align: center; }
         .status-toggle button.has-item { background: #2ecc71; color: white; font-weight: bold; }
         .status-toggle button.own-item { background: #e74c3c; color: white; font-weight: bold; }
         .status-toggle button.not-has-item { background: #95a5a6; color: white; font-weight: bold; }
         
-        /* 2行目：メモ欄（下に配置して横幅100%に広げる） */
         .memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; background: #fff; }
         .memo-input:focus { border-color: var(--primary-color); outline: none; }
         
@@ -120,7 +116,6 @@
                 btn.style.borderColor = 'var(--border-color)';
             });
         }
-
         function selectBook(bookId, color, targetElement) {
             currentBook = bookId;
 
@@ -154,7 +149,6 @@
                 const item = document.createElement('div');
                 item.className = 'subject-item';
 
-                // 1行目のコンテナ（科目名とボタン）
                 const itemTop = document.createElement('div');
                 itemTop.className = 'item-top';
 
@@ -170,17 +164,17 @@
                 const btnYes = document.createElement('button');
                 btnYes.innerText = '〇';
                 if(savedStatus === 'yes') btnYes.className = 'has-item';
-                btnYes.onclick = () => setStatus(sub, 'yes', btnYes, btnOwn, btnNo);
+                btnYes.onclick = () => toggleStatus(sub, 'yes', btnYes, btnOwn, btnNo);
 
                 const btnOwn = document.createElement('button');
                 btnOwn.innerText = '🔺';
                 if(savedStatus === 'own') btnOwn.className = 'own-item';
-                btnOwn.onclick = () => setStatus(sub, 'own', btnYes, btnOwn, btnNo);
+                btnOwn.onclick = () => toggleStatus(sub, 'own', btnYes, btnOwn, btnNo);
 
                 const btnNo = document.createElement('button');
                 btnNo.innerText = '✖';
                 if(savedStatus === 'no') btnNo.className = 'not-has-item';
-                btnNo.onclick = () => setStatus(sub, 'no', btnYes, btnOwn, btnNo);
+                btnNo.onclick = () => toggleStatus(sub, 'no', btnYes, btnOwn, btnNo);
 
                 toggle.appendChild(btnYes);
                 toggle.appendChild(btnOwn);
@@ -189,7 +183,6 @@
                 itemTop.appendChild(name);
                 itemTop.appendChild(toggle);
 
-                // 2行目のメモ欄（幅100%）
                 const memoInput = document.createElement('input');
                 memoInput.type = 'text';
                 memoInput.className = 'memo-input';
@@ -206,22 +199,21 @@
             });
         }
 
-        function setStatus(subject, status, btnYes, btnOwn, btnNo) {
+        function toggleStatus(subject, clickedStatus, btnYes, btnOwn, btnNo) {
             const key = getStorageKey(currentYear, currentBook, subject, 'status');
-            
+            const currentStatus = localStorage.getItem(key) || 'none';
+
             btnYes.className = '';
             btnOwn.className = '';
             btnNo.className = '';
 
-            if (status === 'yes') {
-                localStorage.setItem(key, 'yes');
-                btnYes.className = 'has-item';
-            } else if (status === 'own') {
-                localStorage.setItem(key, 'own');
-                btnOwn.className = 'own-item';
+            if (currentStatus === clickedStatus) {
+                localStorage.setItem(key, 'none');
             } else {
-                localStorage.setItem(key, 'no');
-                btnNo.className = 'not-has-item';
+                localStorage.setItem(key, clickedStatus);
+                if (clickedStatus === 'yes') btnYes.className = 'has-item';
+                if (clickedStatus === 'own') btnOwn.className = 'own-item';
+                if (clickedStatus === 'no') btnNo.className = 'not-has-item';
             }
         }
 
@@ -229,3 +221,4 @@
     </script>
 </body>
 </html>
+

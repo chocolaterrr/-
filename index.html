@@ -12,28 +12,32 @@
             --text-color: #333333;
             --border-color: #dddddd;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 15px; max-width: 800px; margin: 0 auto; }
-        h1 { text-align: center; font-size: 1.4rem; color: #2c3e50; margin-bottom: 20px; }
-        .section { background: var(--card-bg); padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 15px; }
-        .section-title { font-weight: bold; margin-bottom: 10px; color: #7f8c8d; font-size: 0.85rem; }
-        .btn-group { display: flex; flex-wrap: wrap; gap: 8px; }
-        button { padding: 10px 14px; border: 1px solid var(--border-color); background: white; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 10px; max-width: 500px; margin: 0 auto; }
+        h1 { text-align: center; font-size: 1.2rem; color: #2c3e50; margin: 10px 0 15px 0; }
+        .section { background: var(--card-bg); padding: 12px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 12px; }
+        .section-title { font-weight: bold; margin-bottom: 8px; color: #7f8c8d; font-size: 0.8rem; }
+        .btn-group { display: flex; flex-wrap: wrap; gap: 6px; }
+        button { padding: 8px 12px; border: 1px solid var(--border-color); background: white; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; white-space: nowrap; }
         button:hover { background: #f0f0f0; }
         button.active { background: var(--primary-color); color: white; border-color: var(--primary-color); font-weight: bold; }
         
-        .table-container { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
-        .subject-list { display: flex; flex-direction: column; gap: 8px; min-width: 600px; padding-bottom: 5px; }
+        /* 📱 はみ出さないために1科目ごとに縦に並べる新型スタイル */
+        .subject-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+        .subject-item { background: #fafbfc; padding: 12px; border-radius: 6px; border: 1px solid #eee; display: flex; flex-direction: column; gap: 8px; }
         
-        .subject-item { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; gap: 15px; }
-        .subject-name { width: 180px; font-size: 0.9rem; font-weight: 500; shrink: 0; }
+        /* 1行目：科目名（左）と 〇🔺✖（右）をすっきり横並び */
+        .item-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .subject-name { font-size: 0.9rem; font-weight: bold; color: #2c3e50; }
         
-        .status-toggle { display: flex; gap: 4px; background: #eee; padding: 2px; border-radius: 6px; shrink: 0; }
-        .status-toggle button { padding: 6px 12px; font-size: 0.8rem; border: none; border-radius: 4px; background: transparent; color: #333; width: 40px; }
+        /* ボタンのサイズをスマホ幅に完全最適化 */
+        .status-toggle { display: flex; gap: 3px; background: #eee; padding: 2px; border-radius: 6px; }
+        .status-toggle button { padding: 4px 0; font-size: 0.75rem; border: none; border-radius: 4px; background: transparent; color: #333; width: 38px; text-align: center; }
         .status-toggle button.has-item { background: #2ecc71; color: white; font-weight: bold; }
         .status-toggle button.own-item { background: #e74c3c; color: white; font-weight: bold; }
         .status-toggle button.not-has-item { background: #95a5a6; color: white; font-weight: bold; }
         
-        .memo-input { flex: 1; padding: 8px 12px; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 6px; min-width: 200px; box-sizing: border-box; }
+        /* 2行目：メモ欄（下に配置して横幅100%に広げる） */
+        .memo-input { width: 100%; padding: 8px 10px; font-size: 0.8rem; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; background: #fff; }
         .memo-input:focus { border-color: var(--primary-color); outline: none; }
         
         .hidden { display: none; }
@@ -65,9 +69,7 @@
     <!-- 3. 科目一覧・〇🔺✖選択 -->
     <div class="section hidden" id="subject-section">
         <div class="section-title" id="subject-list-title">③ 所持チェック</div>
-        <div class="table-container">
-            <div class="subject-list" id="subject-container"></div>
-        </div>
+        <div class="subject-list" id="subject-container"></div>
     </div>
     <script>
         const BOOK_SERIES = [
@@ -152,6 +154,10 @@
                 const item = document.createElement('div');
                 item.className = 'subject-item';
 
+                // 1行目のコンテナ（科目名とボタン）
+                const itemTop = document.createElement('div');
+                itemTop.className = 'item-top';
+
                 const name = document.createElement('div');
                 name.className = 'subject-name';
                 name.innerText = sub;
@@ -180,18 +186,21 @@
                 toggle.appendChild(btnOwn);
                 toggle.appendChild(btnNo);
 
+                itemTop.appendChild(name);
+                itemTop.appendChild(toggle);
+
+                // 2行目のメモ欄（幅100%）
                 const memoInput = document.createElement('input');
                 memoInput.type = 'text';
                 memoInput.className = 'memo-input';
-                memoInput.placeholder = 'メモ（学校配布、7月購入など）';
+                memoInput.placeholder = 'メモを入力（学校配布、7月購入など）';
                 memoInput.value = localStorage.getItem(getStorageKey(currentYear, currentBook, sub, 'memo')) || '';
                 
                 memoInput.oninput = () => {
                     localStorage.setItem(getStorageKey(currentYear, currentBook, sub, 'memo'), memoInput.value);
                 };
 
-                item.appendChild(name);
-                item.appendChild(toggle);
+                item.appendChild(itemTop);
                 item.appendChild(memoInput);
                 container.appendChild(item);
             });

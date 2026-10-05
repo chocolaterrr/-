@@ -831,9 +831,11 @@ shareData.customTree, id
 );
 if (!n) return;
 if (!n.status) n.status = [];
-n.status = n.status.includes(s) ?
-n.status.filter(item => item !== s) :
-[...n.status, s];
+if (n.status.includes(s)) {
+n.status = n.status.filter(item => item !== s);
+} else {
+n.status.push(s);
+}
 saveAndSync();
 renderCustomApp();
 }

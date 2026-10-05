@@ -16,7 +16,6 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 10px; max-width: 500px; margin: 0 auto; }
         h1 { text-align: center; font-size: 1.2rem; color: #2c3e50; margin: 10px 0 15px 0; }
         
-        /* 📄 ページ切り替えタブ */
         .page-tabs { display: flex; gap: 8px; margin-bottom: 15px; }
         .page-tabs button { flex: 1; padding: 10px; font-weight: bold; border: 2px solid var(--border-color); background: #e2e8f0; color: #7f8c8d; }
         .page-tabs button.active-tab { background: var(--card-bg); color: #2c3e50; border-color: #cbd5e0; border-bottom: none; border-radius: 8px 8px 0 0; }
@@ -35,7 +34,7 @@
         .item-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
         .subject-name { font-size: 0.9rem; font-weight: bold; color: #2c3e50; }
         
-        /* 〇🔺✖ トグルボタン */
+        /* 〇🔺✖ 複数同時選択対応ボタン */
         .status-toggle { display: flex; gap: 3px; background: #eee; padding: 2px; border-radius: 6px; }
         .status-toggle button { padding: 4px 0; font-size: 0.75rem; border: none; border-radius: 4px; background: transparent; color: #333; width: 38px; text-align: center; }
         .status-toggle button.has-item { background: #2ecc71; color: white; font-weight: bold; }
@@ -49,12 +48,25 @@
         .input-group { display: flex; gap: 6px; margin-bottom: 8px; }
         .text-input { flex: 1; padding: 8px 10px; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; }
         button.primary-btn { background: var(--secondary-color); color: white; border-color: var(--secondary-color); font-weight: bold; }
+        
+        /* 📁 折りたたみ・一括選択対応 フォルダデザイン */
         .folder-container { background: var(--card-bg); border: 2px solid #e2e8f0; border-radius: 8px; margin-bottom: 15px; overflow: hidden; }
-        .folder-header { background: #edf2f7; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; }
-        .folder-title { font-weight: bold; font-size: 0.95rem; color: #2d3748; display: flex; align-items: center; gap: 6px; }
-        .delete-btn { background: #fff; color: #e74c3c; border-color: #fab1a0; padding: 4px 8px; font-size: 0.75rem; }
+        .folder-header { background: #edf2f7; padding: 10px 12px; display: flex; align-items: center; border-bottom: 1px solid #e2e8f0; gap: 8px; cursor: pointer; user-select: none; }
+        .folder-header:hover { background: #e2e8f0; }
+        .folder-left { display: flex; align-items: center; gap: 8px; flex: 1; font-weight: bold; font-size: 0.95rem; color: #2d3748; }
+        .folder-arrow { font-size: 0.75rem; transition: transform 0.2s; color: #a0aec0; }
+        
+        /* 折りたたみ時の見た目の制御 */
+        .folder-container.collapsed .folder-arrow { transform: rotate(-90deg); }
+        .folder-container.collapsed .folder-content { display: none; }
+        .folder-container.collapsed .folder-header { border-bottom: none; }
+        
+        /* 一括削除用チェックボックス */
+        .folder-checkbox { width: 16px; height: 16px; cursor: pointer; shrink: 0; }
+        .batch-action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 8px 12px; background: #fff3cd; border: 1px solid #ffeeba; border-radius: 6px; }
+        .batch-btn { background: #fff; color: #e74c3c; border-color: #fab1a0; font-size: 0.8rem; padding: 6px 10px; font-weight: bold; }
+        
         .empty-message { font-size: 0.8rem; color: #a0aec0; text-align: center; padding: 10px 0; }
-
         .hidden { display: none; }
     </style>
 </head>
@@ -62,13 +74,12 @@
 
     <h1>学習教材 所持管理システム</h1>
 
-    <!-- ページ切り替え用タブ -->
     <div class="page-tabs">
         <button id="tab-fixed" class="active-tab" onclick="switchPage('fixed')">📘 共通テスト問題集</button>
         <button id="tab-custom" onclick="switchPage('custom')">📁 自由追加（二次対策など）</button>
     </div>
 
-    <!-- ==================== 1ページ目: 共通テスト問題集エリア ==================== -->
+    <!-- 1ページ目エリア -->
     <div id="page-fixed-area">
         <div class="section">
             <div class="section-title">① 年度を選択</div>
@@ -91,7 +102,7 @@
         </div>
     </div>
 
-    <!-- ==================== 2ページ目: 自由追加フォルダエリア ==================== -->
+    <!-- 2ページ目エリア -->
     <div id="page-custom-area" class="hidden">
         <div class="section">
             <div class="section-title">新しいフォルダ（分野・大学名など）を作る</div>
@@ -100,6 +111,13 @@
                 <button onclick="createFolder()" class="primary-btn">フォルダ作成</button>
             </div>
         </div>
+        
+        <!-- 一括削除バー -->
+        <div id="batch-bar" class="batch-action-bar hidden">
+            <div style="font-size: 0.8rem; color: #856404; font-weight: bold;">チェックしたフォルダ：</div>
+            <button class="batch-btn" onclick="deleteSelectedFolders()">選択したフォルダを一括削除</button>
+        </div>
+        
         <div id="folders-display-area"></div>
     </div>
     <script>
@@ -120,11 +138,11 @@
                 tabCustom.className = 'active-tab';
                 areaFixed.classList.add('hidden');
                 areaCustom.classList.remove('hidden');
-                renderCustomApp(); // 2ページ目の描画
+                renderCustomApp();
             }
         }
 
-        // ==================== 1ページ目（共テ）用のプログラム ====================
+        // ==================== 1ページ目（共テ）プログラム ====================
         const BOOK_SERIES = [
             { id: "黒本", name: "黒本 (河合塾)", color: "#222222" },
             { id: "青本", name: "青本 (駿台)",   color: "#1f4068" },
@@ -150,8 +168,8 @@
             });
         }
 
-        function getStorageKey(year, bookId, subject, type = 'status') {
-            return `book_check_${year}_${bookId}_${subject}_${type}`;
+        function getStorageKey(year, bookId, subject, suffix = '') {
+            return `bk_${year}_${bookId}_${subject}${suffix}`;
         }
 
         function selectYear(year) {
@@ -191,6 +209,7 @@
             document.getElementById('subject-section').classList.remove('hidden');
             renderSubjects();
         }
+
         function renderSubjects() {
             const container = document.getElementById('subject-container');
             container.innerHTML = '';
@@ -207,21 +226,24 @@
                 name.className = 'subject-name';
                 name.innerText = sub;
 
-                const savedStatus = localStorage.getItem(getStorageKey(currentYear, currentBook, sub, 'status')) || 'none';
+                // 複数選択用のデータを復元（カンマ区切りで保存されているのを分解）
+                const savedStatusStr = localStorage.getItem(getStorageKey(currentYear, currentBook, sub, '_status')) || '';
+                const activeStatuses = savedStatusStr ? savedStatusStr.split(',') : [];
+
                 const toggle = document.createElement('div');
                 toggle.className = 'status-toggle';
 
                 const btnYes = document.createElement('button'); btnYes.innerText = '〇';
-                if(savedStatus === 'yes') btnYes.className = 'has-item';
-                btnYes.onclick = () => toggleFixedStatus(sub, 'yes', btnYes, btnOwn, btnNo);
+                if(activeStatuses.includes('yes')) btnYes.className = 'has-item';
+                btnYes.onclick = () => toggleFixedMultiStatus(sub, 'yes', btnYes);
 
                 const btnOwn = document.createElement('button'); btnOwn.innerText = '🔺';
-                if(savedStatus === 'own') btnOwn.className = 'own-item';
-                btnOwn.onclick = () => toggleFixedStatus(sub, 'own', btnYes, btnOwn, btnNo);
+                if(activeStatuses.includes('own')) btnOwn.className = 'own-item';
+                btnOwn.onclick = () => toggleFixedMultiStatus(sub, 'own', btnOwn);
 
                 const btnNo = document.createElement('button'); btnNo.innerText = '✖';
-                if(savedStatus === 'no') btnNo.className = 'not-has-item';
-                btnNo.onclick = () => toggleFixedStatus(sub, 'no', btnYes, btnOwn, btnNo);
+                if(activeStatuses.includes('no')) btnNo.className = 'not-has-item';
+                btnNo.onclick = () => toggleFixedMultiStatus(sub, 'no', btnNo);
 
                 toggle.appendChild(btnYes); toggle.appendChild(btnOwn); toggle.appendChild(btnNo);
                 itemTop.appendChild(name); itemTop.appendChild(toggle);
@@ -229,114 +251,243 @@
                 const memoInput = document.createElement('input');
                 memoInput.type = 'text'; memoInput.className = 'memo-input';
                 memoInput.placeholder = 'メモを入力（学校配布、7月購入など）';
-                memoInput.value = localStorage.getItem(getStorageKey(currentYear, currentBook, sub, 'memo')) || '';
-                memoInput.oninput = () => { localStorage.setItem(getStorageKey(currentYear, currentBook, sub, 'memo'), memoInput.value); };
+                memoInput.value = localStorage.getItem(getStorageKey(currentYear, currentBook, sub, '_memo')) || '';
+                memoInput.oninput = () => { localStorage.setItem(getStorageKey(currentYear, currentBook, sub, '_memo'), memoInput.value); };
 
                 item.appendChild(itemTop); item.appendChild(memoInput);
                 container.appendChild(item);
             });
         }
 
-        function toggleFixedStatus(subject, clickedStatus, btnYes, btnOwn, btnNo) {
-            const key = getStorageKey(currentYear, currentBook, subject, 'status');
-            const currentStatus = localStorage.getItem(key) || 'none';
-            btnYes.className = ''; btnOwn.className = ''; btnNo.className = '';
+        // 1ページ目用の複数選択対応トグル処理
+        function toggleFixedMultiStatus(subject, clickedStatus, btnElement) {
+            const key = getStorageKey(currentYear, currentBook, subject, '_status');
+            const savedStatusStr = localStorage.getItem(key) || '';
+            let activeStatuses = savedStatusStr ? savedStatusStr.split(',') : [];
 
-            if (currentStatus === clickedStatus) {
-                localStorage.setItem(key, 'none');
+            if (activeStatuses.includes(clickedStatus)) {
+                activeStatuses = activeStatuses.filter(s => s !== clickedStatus);
+                btnElement.className = '';
             } else {
-                localStorage.setItem(key, clickedStatus);
-                if (clickedStatus === 'yes') btnYes.className = 'has-item';
-                if (clickedStatus === 'own') btnOwn.className = 'own-item';
-                if (clickedStatus === 'no') btnNo.className = 'not-has-item';
+                activeStatuses.push(clickedStatus);
+                if (clickedStatus === 'yes') btnElement.className = 'has-item';
+                if (clickedStatus === 'own') btnElement.className = 'own-item';
+                if (clickedStatus === 'no') btnElement.className = 'not-has-item';
             }
+
+            localStorage.setItem(key, activeStatuses.join(','));
         }
-
-
-        // ==================== 2ページ目（自作自由追加）用のプログラム ====================
-        let customData = [];
+        // ==================== 2ページ目（自作・階層フォルダ）プログラム ====================
+        // 階層データ構造: [ { id, name, type: 'folder'/'text', collapsed: bool, selected: bool, status: [], memo: "", children: [] } ]
+        let customTree = [];
 
         function loadCustomData() {
-            const saved = localStorage.getItem('custom_management_data_v2');
-            if (saved) { try { customData = JSON.parse(saved); } catch (e) { customData = []; } }
+            const saved = localStorage.getItem('custom_tree_data_v3');
+            if (saved) { try { customTree = JSON.parse(saved); } catch (e) { customTree = []; } }
         }
-        function saveCustomData() { localStorage.setItem('custom_management_data_v2', JSON.stringify(customData)); }
+        function saveCustomData() { localStorage.setItem('custom_tree_data_v3', JSON.stringify(customTree)); }
 
+        // 再帰的に特定のIDの要素を探す
+        function findNodeById(nodes, id) {
+            for (let node of nodes) {
+                if (node.id === id) return node;
+                if (node.children) {
+                    let found = findNodeById(node.children, id);
+                    if (found) return found;
+                }
+            }
+            return null;
+        }
+
+        // 最上位のフォルダ作成
         function createFolder() {
             const input = document.getElementById('new-folder-name');
             const name = input.value.trim(); if (!name) return;
-            customData.push({ id: 'f_' + Date.now(), name: name, texts: [] });
+            customTree.push({ id: 'node_' + Date.now(), name: name, type: 'folder', collapsed: false, selected: false, children: [] });
             saveCustomData(); renderCustomApp(); input.value = '';
         }
-        function deleteFolder(fId) {
-            if (!confirm('このフォルダと中身をすべて削除しますか？')) return;
-            customData = customData.filter(f => f.id !== fId); saveCustomData(); renderCustomApp();
-        }
-        function createText(fId) {
-            const input = document.getElementById('input_' + fId);
+
+        // フォルダ内に子要素（フォルダまたはテキスト）を作成
+        function addChildNode(parentId, type) {
+            const input = document.getElementById(`input_${parentId}`);
             const name = input.value.trim(); if (!name) return;
-            const folder = customData.find(f => f.id === fId); if (!folder) return;
-            folder.texts.push({ id: 't_' + Date.now(), name: name, status: 'none', memo: '' });
+            const parent = findNodeById(customTree, parentId);
+            if (!parent) return;
+
+            const newNode = {
+                id: 'node_' + Date.now() + Math.random().toString(36).substr(2, 5),
+                name: name,
+                type: type,
+                selected: false
+            };
+
+            if (type === 'folder') {
+                newNode.collapsed = false;
+                newNode.children = [];
+            } else {
+                newNode.status = [];
+                newNode.memo = '';
+            }
+
+            parent.children.push(newNode);
             saveCustomData(); renderCustomApp();
         }
-        function deleteText(fId, tId) {
-            const folder = customData.find(f => f.id === fId); if (!folder) return;
-            folder.texts = folder.texts.filter(t => t.id !== tId); saveCustomData(); renderCustomApp();
-        }
-        function toggleCustomStatus(fId, tId, status) {
-            const folder = customData.find(f => f.id === fId); if (!folder) return;
-            const text = folder.texts.find(t => t.id === tId); if (!text) return;
-            text.status = (text.status === status) ? 'none' : status; saveCustomData(); renderCustomApp();
-        }
-        function updateCustomMemo(fId, tId, val) {
-            const folder = customData.find(f => f.id === fId); if (!folder) return;
-            const text = folder.texts.find(t => t.id === tId); if (!text) return;
-            text.memo = val; saveCustomData();
+
+        // 単一ノードの削除処理
+        function deleteSingleNode(id) {
+            if (!confirm('この項目（中のすべての階層含む）を削除しますか？')) return;
+            customTree = removeNodeFromTree(customTree, id);
+            saveCustomData(); renderCustomApp();
         }
 
-        function renderCustomApp() {
-            const area = document.getElementById('folders-display-area'); area.innerHTML = '';
-            if (customData.length === 0) { area.innerHTML = '<div class="empty-message">フォルダがありません。</div>'; return; }
-
-            customData.forEach(folder => {
-                const fBox = document.createElement('div'); fBox.className = 'folder-container';
-                const header = document.createElement('div'); header.className = 'folder-header';
-                header.innerHTML = `<div class="folder-title">📁 ${folder.name}</div><button class="delete-btn" onclick="deleteFolder('${folder.id}')">削除</button>`;
-                fBox.appendChild(header);
-
-                const addForm = document.createElement('div'); addForm.style.padding = '10px 10px 0 10px'; addForm.className = 'input-group';
-                addForm.innerHTML = `<input type="text" id="input_${folder.id}" class="text-input" placeholder="教材名を追加"><button onclick="createText('${folder.id}')">追加</button>`;
-                fBox.appendChild(addForm);
-
-                const tList = document.createElement('div'); tList.className = 'subject-list'; tList.style.padding = '10px';
-                if (folder.texts.length === 0) { tList.innerHTML = '<div class="empty-message">登録なし</div>'; } else {
-                    folder.texts.forEach(t => {
-                        const item = document.createElement('div'); item.className = 'subject-item';
-                        const top = document.createElement('div'); top.className = 'item-top';
-                        const nSpan = document.createElement('div'); nSpan.className = 'subject-name'; nSpan.innerText = t.name;
-
-                        const tog = document.createElement('div'); tog.className = 'status-toggle';
-                        const bY = document.createElement('button'); bY.innerText = '〇'; if(t.status === 'yes') bY.className = 'has-item'; bY.onclick = () => toggleCustomStatus(folder.id, t.id, 'yes');
-                        const bO = document.createElement('button'); bO.innerText = '🔺'; if(t.status === 'own') bO.className = 'own-item'; bO.onclick = () => toggleCustomStatus(folder.id, t.id, 'own');
-                        const bN = document.createElement('button'); bN.innerText = '✖'; if(t.status === 'no') bN.className = 'not-has-item'; bN.onclick = () => toggleCustomStatus(folder.id, t.id, 'no');
-                        tog.appendChild(bY); tog.appendChild(bO); tog.appendChild(bN); top.appendChild(nSpan); top.appendChild(tog);
-
-                        const btm = document.createElement('div'); btm.style.display = 'flex'; btm.style.gap = '6px';
-                        const mIn = document.createElement('input'); mIn.type = 'text'; mIn.className = 'memo-input'; mIn.value = t.memo; mIn.placeholder = 'メモを入力'; mIn.oninput = (e) => updateCustomMemo(folder.id, t.id, e.target.value);
-                        const dBtn = document.createElement('button'); dBtn.innerText = '削'; dBtn.style.color = '#e74c3c'; dBtn.style.borderColor = '#fab1a0'; dBtn.onclick = () => deleteText(folder.id, t.id);
-                        btm.appendChild(mIn); btm.appendChild(dBtn);
-
-                        item.appendChild(top); item.appendChild(btm); tList.appendChild(item);
-                    });
-                }
-                fBox.appendChild(tList); area.appendChild(fBox);
+        function removeNodeFromTree(nodes, id) {
+            return nodes.filter(node => {
+                if (node.id === id) return false;
+                if (node.children) node.children = removeNodeFromTree(node.children, id);
+                return true;
             });
         }
 
-        // 初期起動
+        // 一括選択チェックボックスの切り替え
+        function toggleSelectNode(id, checked) {
+            const node = findNodeById(customTree, id);
+            if (node) node.selected = checked;
+            saveCustomData();
+            updateBatchBarVisibility();
+        }
+
+        function updateBatchBarVisibility() {
+            const batchBar = document.getElementById('batch-bar');
+            const hasSelected = checkAnySelected(customTree);
+            if (hasSelected) batchBar.classList.remove('hidden');
+            else batchBar.classList.add('hidden');
+        }
+
+        function checkAnySelected(nodes) {
+            for (let n of nodes) {
+                if (n.selected) return true;
+                if (n.children && checkAnySelected(n.children)) return true;
+            }
+            return false;
+        }
+
+        // チェックされたフォルダ・テキストを一括削除
+        function deleteSelectedFolders() {
+            if (!confirm('チェックの入ったすべての項目を一括削除しますか？')) return;
+            customTree = removeSelectedFromTree(customTree);
+            saveCustomData(); renderCustomApp();
+            document.getElementById('batch-bar').classList.add('hidden');
+        }
+
+        function removeSelectedFromTree(nodes) {
+            return nodes.filter(node => {
+                if (node.selected) return false;
+                if (node.children) node.children = removeSelectedFromTree(node.children);
+                return true;
+            });
+        }
+
+        // 折りたたみ切り替え
+        function toggleCollapse(id, event) {
+            if (event.target.tagName === 'BUTTON' || event.target.tagName === 'INPUT') return;
+            const node = findNodeById(customTree, id);
+            if (node && node.type === 'folder') {
+                node.collapsed = !node.collapsed;
+                saveCustomData(); renderCustomApp();
+            }
+        }
+
+        // 自由追加用の複数選択対応トグル
+        function toggleCustomMultiStatus(id, status) {
+            const node = findNodeById(customTree, id);
+            if (!node) return;
+            if (!node.status) node.status = [];
+
+            if (node.status.includes(status)) {
+                node.status = node.status.filter(s => s !== status);
+            } else {
+                node.status.push(status);
+            }
+            saveCustomData(); renderCustomApp();
+        }
+
+        function updateCustomMemo(id, val) {
+            const node = findNodeById(customTree, id);
+            if (node) { node.memo = val; saveCustomData(); }
+        }
+
+        // 階層構造（ツリー）を再帰的にHTML化する最強のレンダラー
+        function generateHTMLTree(nodes, depth = 0) {
+            let html = '';
+            nodes.forEach(node => {
+                const paddingLeft = depth * 15; // 階層が深くなるほど右にずらすズレ幅
+
+                if (node.type === 'folder') {
+                    const collapsedClass = node.collapsed ? 'collapsed' : '';
+                    const checkedAttr = node.selected ? 'checked' : '';
+                    
+                    html += `
+                    <div class="folder-container ${collapsedClass}" style="margin-left: ${paddingLeft}px;">
+                        <div class="folder-header" onclick="toggleCollapse('${node.id}', event)">
+                            <input type="checkbox" class="folder-checkbox" ${checkedAttr} onchange="toggleSelectNode('${node.id}', this.checked)">
+                            <div class="folder-left">
+                                <span class="folder-arrow">▼</span>
+                                <span>📁 ${node.name}</span>
+                            </div>
+                            <button class="delete-btn" onclick="deleteSingleNode('${node.id}')">削除</button>
+                        </div>
+                        <div class="folder-content" style="padding: 8px;">
+                            <!-- フォルダ内への追加フォーム -->
+                            <div class="input-group">
+                                <input type="text" id="input_${node.id}" class="text-input" placeholder="この中に中身を追加">
+                                <button onclick="addChildNode('${node.id}', 'text')">+テキスト</button>
+                                <button onclick="addChildNode('${node.id}', 'folder')" style="border-color:var(--secondary-color); color:var(--secondary-color);">+フォルダ</button>
+                            </div>
+                            <div class="subject-list" style="margin-top: 8px;">
+                                ${generateHTMLTree(node.children, depth + 1)}
+                            </div>
+                        </div>
+                    </div>`;
+                } else {
+                    // テキストノードの描画（複数選択対応）
+                    if (!node.status) node.status = [];
+                    const bY = node.status.includes('yes') ? 'class="has-item"' : '';
+                    const bO = node.status.includes('own') ? 'class="own-item"' : '';
+                    const bN = node.status.includes('no') ? 'class="not-has-item"' : '';
+                    const checkedAttr = node.selected ? 'checked' : '';
+
+                    html += `
+                    <div class="subject-item" style="margin-left: ${paddingLeft}px; background:#fff; border: 1px solid #e2e8f0;">
+                        <div class="item-top">
+                            <div style="display:flex; align-items:center; gap:8px; flex:1;">
+                                <input type="checkbox" class="folder-checkbox" ${checkedAttr} onchange="toggleSelectNode('${node.id}', this.checked)">
+                                <div class="subject-name">${node.name}</div>
+                            </div>
+                            <div class="status-toggle">
+                                <button ${bY} onclick="toggleCustomMultiStatus('${node.id}', 'yes')">〇</button>
+                                <button ${bO} onclick="toggleCustomMultiStatus('${node.id}', 'own')">🔺</button>
+                                <button ${bN} onclick="toggleCustomMultiStatus('${node.id}', 'no')">✖</button>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 6px; width:100%;">
+                            <input type="text" class="memo-input" value="${node.memo || ''}" placeholder="メモを入力" oninput="updateCustomMemo('${node.id}', this.value)">
+                            <button onclick="deleteSingleNode('${node.id}')" style="color:#e74c3c; border-color:#fab1a0; padding:6px 8px;">削</button>
+                        </div>
+                    </div>`;
+                }
+            });
+            return html;
+        }
+
+        function renderCustomApp() {
+            const area = document.getElementById('folders-display-area');
+            area.innerHTML = generateHTMLTree(customTree, 0);
+            updateBatchBarVisibility();
+        }
+
+        // アプリケーション初期化
         initBookButtons();
         loadCustomData();
     </script>
 </body>
 </html>
-
